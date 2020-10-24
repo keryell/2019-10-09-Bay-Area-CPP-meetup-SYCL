@@ -1,0 +1,8 @@
+% Print an active URL :
+
+\RequirePackage{hyperref}
+
+\newcommand{\LienPDF}{\bgroup\catcode`\ =12\catcode`\~=12\catcode`\:=12\catcode`\_=12\catcode`\&=12\catcode`\%=12\LienPDFinterne}
+\newcommand{\LienPDFinterne}[1]{\href{#1}{\texttt{\small #1}}\egroup}
+\newcommand{\LienPDFtexte}[1]{\bgroup\catcode`\ =12\catcode`\~=12\catcode`\:=12\catcode`\_=12\catcode`\&=12\catcode`\%=12\LienPDFtexteinterne{#1}}
+\newcommand{\LienPDFtexteinterne}[1]{\egroup\href{#1}}% #2 comes afterward

@@ -1,0 +1,26 @@
+% Ronan.Keryell@cri.ensmp.fr
+
+\RequirePackage{xspace}
+
+\DeclareFontFamily{U}{bbold}{}
+\DeclareFontShape{U}{bbold}{m}{n}{%
+  <5> <6> <7> <8> <9> <10> sgen * bbold
+  <10.95> bbold10
+  <12> bbold12
+  <14.4> bbold12
+  <17.28> bbold17
+  <20.74> bbold17
+  <24.88> bbold17
+}{}
+\DeclareSymbolFont{bbold}{U}{bbold}{m}{n}
+\DeclareSymbolFontAlphabet{\bbold}{bbold}
+
+% On utilise pluto^t la fonte bbold (\bbold) plus jolie que la macro AMS \Bbb :
+%
+\newcommand{\NN}{\ifmmode\bbold N\else$\bbold N$\xspace\fi}
+\newcommand{\ZZ}{\ifmmode\bbold Z\else$\bbold Z$\xspace\fi}
+\newcommand{\QQ}{\ifmmode\bbold Q\else$\bbold Q$\xspace\fi}
+\newcommand{\RR}{\ifmmode\bbold R\else$\bbold R$\xspace\fi}
+\newcommand{\CC}{\ifmmode\bbold C\else$\bbold C$\xspace\fi}
+\newcommand{\DD}{\ifmmode\bbold D\else$\bbold D$\xspace\fi}
+

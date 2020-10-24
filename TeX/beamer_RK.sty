@@ -1,0 +1,105 @@
+\ProvidesPackage{beamer_RK}[2019/10/09 Some Ronan Keryell 2019
+specialization of the LaTeX Beamer style]
+
+\mode<presentation>
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSection[]
+{%
+  % Do not output the outline frame itself in the TOC
+  \StopTocOutput
+  { % Open a block to keep background setting local to this slide
+    % Since in section parts the background is black, use white font
+    \setbeamercolor{section in head/foot}{fg=white}%
+    \setbeamercolor{subsection in head/foot}{fg=white}%
+    \ifthenelse{\isundefined{\SectionBackground}}{}{\SectionBackground}%
+    \begin{frame}<presentation>{\outlinename}
+      \ifthenelse{\OutlineColumnNumbers>1}{\begin{multicols}{\OutlineColumnNumbers}}{}
+        \OutlineFontSize
+        \tableofcontents[currentsection]
+        \ifthenelse{\OutlineColumnNumbers>1}{\end{multicols}}{}
+    \end{frame}
+  }
+ \NormalTocOutput
+}
+
+\AtBeginSubsection[]
+{%
+  % Do not output the outline frame itself in the TOC
+  \StopTocOutput
+  { % Open a block to keep background setting local to this
+    % Since in section parts the background is black, use white font
+    \setbeamercolor{section in head/foot}{fg=white}%
+    \setbeamercolor{subsection in head/foot}{fg=white}%
+    \ifthenelse{\isundefined{\SubsectionBackground}}{}{\SubsectionBackground}%
+    \begin{frame}<presentation>{\outlinename}
+      \ifthenelse{\OutlineColumnNumbers>1}{\begin{multicols}{\OutlineColumnNumbers}}{}
+        \OutlineFontSize
+        \tableofcontents[currentsection,currentsubsection]
+        \ifthenelse{\OutlineColumnNumbers>1}{\end{multicols}}{}
+    \end{frame}
+  }
+  \NormalTocOutput
+}
+
+\AtBeginSubsubsection[]
+{%
+  % Do not output the outline frame itself in the TOC
+  \StopTocOutput
+  { % Open a block to keep background setting local to this
+    % Since in section parts the background is black, use white font
+    \setbeamercolor{section in head/foot}{fg=white}%
+    \setbeamercolor{subsection in head/foot}{fg=white}%
+    \ifthenelse{\isundefined{\SubsubsectionBackground}}{}{\SubsubsectionBackground}%
+    \begin{frame}<presentation>{\outlinename}
+      \ifthenelse{\OutlineColumnNumbers>1}{\begin{multicols}{\OutlineColumnNumbers}}{}
+        \OutlineFontSize
+        \tableofcontents[currentsection,currentsubsection,currentsubsubsection]
+        \ifthenelse{\OutlineColumnNumbers>1}{\end{multicols}}{}
+      \tableofcontents[currentsubsubsection]
+    \end{frame}
+  }
+  \NormalTocOutput
+}
+\mode<all>
+
+\RequirePackage{beamer_SYCL}
+
+% To be able to include a full document, such as a PowerPoint output :-)
+\usepackage{pdfpages}
+
+% To use some IPA symbols
+\usepackage{tipa}
+\usepackage{moresize}
+% Some arrows and > which are close to Xilinx symbols
+\usepackage{fontawesome}
+
+% To draw diagonal line on some text:
+%\usepackage[thicklines]{cancel}
+\renewcommand{\CancelColor}{\color{AMD-light-blue}}
+
+% Put some red lines between multiple columns
+\setlength{\columnseprule}{1pt}
+\renewcommand{\columnseprulecolor}{\color{red}}
+
+%\show\titlepage
+%\slidepagestyle{CRI}
+
+%\LicenseTrans
+
+% Create a slide from a full page image file, such as a PDF page
+\newcommand{\SlideFromImageFile}[1]{
+  {
+    \SetImageBackground{#1}
+    \begin{frame}[plain]
+    \end{frame}
+  }
+}
+
+
+% To add arrows between slide pieces and other lstlisting decorations:
+% https://tex.stackexchange.com/questions/266401/frame-a-line-in-an-environnement-lstlisting
+% https://tex.stackexchange.com/questions/8851/how-can-i-highlight-some-lines-from-source-code
+% /usr/share/doc/texlive-doc/latex/tikzmark/tikzmark.pdf
+\usetikzlibrary{tikzmark}
+\usetikzmarklibrary{listings}

@@ -1,0 +1,120 @@
+\ProvidesPackage{balloon_rk}[2017/10/19 Add balloons in listings]
+
+
+% https://tex.stackexchange.com/questions/351434/why-such-spurious-vertical-space-before-listings
+% https://tex.stackexchange.com/questions/351370/why-tikzmark-doesnt-work-with-beamer-class
+% https://tex.stackexchange.com/questions/79762/automatic-background-coloring-in-listings-using-tikzmark/79787#79787
+
+% 2019/10/11
+% https://tex.stackexchange.com/questions/351370/why-tikzmark-doesnt-work-with-beamer-class/511883#511883
+% It looks like this problem has been fixed upstream either by
+% https://github.com/loopspace/tikzmark/commit/1427ccaa0be7932d964d3f51b26b5a4d3444e1af
+% or
+% https://github.com/loopspace/tikzmark/commit/1427ccaa0be7932d964d3f51b26b5a4d3444e1af
+% So if you use the work-around presented above on a recent TeXlive
+% distribution (I have tried on Ubuntu 19.04 & 19.10 and
+% Debian/unstable) it does not work... You need now to go back to the
+% first example of this page.
+
+% So remove all the "-\the \beamer@slideinframe" from the implementation.
+
+% Loop Space answers: Hi, as it's possible that your "answer" here
+% will get deleted, can I encourage you to let me know via github if
+% there's still a problem with tikzmark. The latest version got to
+% ctan only very recently so will take time to get to debian, I
+% expect. I try not to introduce new bugs each time but I'm not always
+% successful!
+
+% Do not load tikzmark twice
+%\usetikzlibrary{tikzmark,fit,calc}
+\usetikzlibrary{fit,calc}
+
+\tikzset{
+  balloon/.style={
+    %draw, remove the border
+    fill=blue!10,
+    opacity=0.4,
+    %inner sep=4pt,
+    inner sep=2pt, % tighter to the text
+    rounded corners=2pt
+  },
+}
+
+% Take the TiKZ style as the first parameter
+\newcommand{\BalloonImplementation}[5]{%
+  \pgfmathtruncatemacro\firstline{%
+    #4-1%
+  }%
+  \iftikzmark{line-#3-\firstline-start}{%
+    \iftikzmark{line-#3-#4-first}{%
+      \xdef\blines{($ ({pic cs:line-#3-\firstline-start} -| {pic
+          cs:line-#3-#4-first})!.5!({pic cs:line-#3-#4-first}) $)}%
+    }{%
+      \iftikzmark{line-#3-#4-start}{%
+        \xdef\blines{({pic cs:line-#3-\firstline-start} -| {pic
+            cs:line-#3-#4-start})}%
+      }{%
+        \xdef\blines{(pic cs:line-#3-\firstline-start)}%
+      }%
+    }%
+  }{%
+    \xdef\blines{}%
+  }%
+  \foreach \k in {#4,...,#5} {%
+    \iftikzmark{line-#3-\k-first}{%
+      \xdef\blines{\blines (pic cs:line-#3-\k-first) }%
+    }{} \iftikzmark{line-#3-\k-end}{%
+      \xdef\blines{\blines (pic cs:line-#3-\k-end) }%
+    }{}%
+  }%
+  \ifx\blines\empty
+  \else
+  \edef\temp{\noexpand\tikz[remember picture,overlay]
+    \noexpand\node[fit={\blines},#1] (#2) {};}%
+  \temp
+  % Try to avoid some vertical spacing which is added somehow...
+  \vskip-\baselineskip
+  \fi
+}
+
+% Blue version
+\newcommand{\balloon}{\BalloonImplementation{balloon}}
+
+% Orange version
+\tikzset{
+  balloono/.style={
+    %draw, remove the border
+    fill=orange!20,
+    opacity=0.4,
+    %inner sep=4pt,
+    inner sep=2pt, % tighter to the text
+    rounded corners=2pt
+  },
+}
+\newcommand{\balloono}{\BalloonImplementation{balloono}}
+
+% Green version
+\tikzset{
+  balloong/.style={
+    %draw, remove the border
+    fill=green!20,
+    opacity=0.4,
+    %inner sep=4pt,
+    inner sep=2pt, % tighter to the text
+    rounded corners=2pt
+  },
+}
+\newcommand{\balloong}{\BalloonImplementation{balloong}}
+
+% Red version
+\tikzset{
+  balloonr/.style={
+    %draw, remove the border
+    fill=red!20,
+    opacity=0.4,
+    %inner sep=4pt,
+    inner sep=2pt, % tighter to the text
+    rounded corners=2pt
+  },
+}
+\newcommand{\balloonr}{\BalloonImplementation{balloonr}}

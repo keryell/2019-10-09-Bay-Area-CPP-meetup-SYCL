@@ -1,0 +1,553 @@
+%% $Id: beamer_rk.sty,v 1.9 2008/09/01 18:36:21 keryell Exp keryell $
+
+\ProvidesPackage{beamer_SYCL}[2015/05/11 A Beamer style for PostScript and
+PDF output with a compatibility mode with my trans_rk seminar mode]
+
+\RequirePackage{etex,ifthen,ifpdf,tikz}
+
+\DeclareOption{WhiteBackground}{\setboolean{WhiteBackground}{true}}
+
+
+% By default, without the WhiteBackground option, in presentation mode the
+% background is dark:
+\newboolean{WhiteBackground}
+\setboolean{WhiteBackground}{false}
+
+% To add an image in the left side bar:
+\DeclareOption{LeftSideBar}{\setboolean{LeftSideBar}{true}}
+\newboolean{LeftSideBar}
+\setboolean{LeftSideBar}{false}
+
+% To add a shaded background:
+\DeclareOption{ShadedBackground}{\setboolean{ShadedBackground}{true}}
+\newboolean{ShadedBackground}
+\setboolean{ShadedBackground}{false}
+
+% To add a plain black background:
+\DeclareOption{BlackBackground}{\setboolean{BlackBackground}{true}}
+\newboolean{BlackBackground}
+\setboolean{BlackBackground}{false}
+
+% To remove the line in the header:
+\DeclareOption{NoHeadLineSep}{\setboolean{HeadLineSep}{false}}
+\newboolean{HeadLineSep}
+\setboolean{HeadLineSep}{true}
+
+\ProcessOptions
+
+% To have a working \textsc{}:
+\RequirePackage{helvet}
+
+\RequirePackage{LienPDF,pgf,multicol}
+\ifpdf\else
+\RequirePackage[dvipsnames]{pstricks}
+\RequirePackage{pst-text,pst-grad}
+\fi
+
+\RequirePackage{getVersion}
+
+% Some local helpers to do drawings:
+\RequirePackage{tikz_hpc}
+
+
+\definecolor{AMD-light-blue}{HTML}{00a9b5}
+\definecolor{AMD-light-green}{HTML}{a6ce39}
+
+\let\OldRightarrow=\Rightarrow
+\RequirePackage{marvosym}
+\let\MarvosymRightarrow=\Rightarrow
+\let\Rightarrow=\OldRightarrow
+\RequirePackage{wasysym}
+% Deal with conflicts between ifsym and marvosym by renaming conflicting
+% symbols:
+\let\MarvosymLightning=\Lightning
+\let\Lightning=\UnTrucIndefini
+\let\MarvosymLetter=\Letter
+\let\Letter=\UnTrucIndefini
+\let\MarvosymSun=\Sun
+\let\Sun=\UnTrucIndefini
+\RequirePackage[weather,misc,alpine,clock]{ifsym}
+
+
+% Seems useless:
+%\usetheme{Montpellier}
+\useoutertheme{smoothtree}
+\useinnertheme{rounded}
+\setbeamertemplate{footline}[page number]
+
+\def\outlinename{Le plan}
+
+% Include a figure, centered, scaled to fit the slide height:
+\newcommand{\IncludeGraphicH}[1]{%
+  \centerline{\includegraphics[height=0.88\vsize]{#1}}%
+  }
+
+
+%% Headline
+
+% To redefine to have another text size of items in the outline:
+\newcommand{\OutlineFontSize}{\footnotesize}
+
+% Corrected from
+% /usr/share/texmf/tex/latex/beamer/themes/outer/beamerouterthemesmoothtree.sty
+% the headline template to have the section & subsection on the same line:
+\defbeamertemplate*{headline}{rk theme}
+{%
+  %\pgfuseshading{beamer@treeshade}%
+  %\vskip-10.25ex%
+  \hbox{\begin{beamercolorbox}[wd=0.5\paperwidth,ht=2.125ex,dp=1.125ex,ignorebg]{section in head/foot}
+    \usebeamerfont{section in head/foot}%
+    \hskip6pt\llap{\couleuritemr\donotcoloroutermaths$\bullet$}\insertsectionhead
+  \end{beamercolorbox}
+  \begin{beamercolorbox}[wd=0.5\paperwidth,ht=2.125ex,dp=1.125ex,ignorebg]{subsection in head/foot}
+    \usebeamerfont{subsection in head/foot}%
+    \hfill{\couleuritemt\donotcoloroutermaths$\blacktriangleright$}\insertsubsectionhead~~
+  \end{beamercolorbox}}
+}
+
+% Corrected from
+% /usr/share/texmf/tex/latex/beamer/themes/outer/beamerouterthemesmoothtree.sty
+\defbeamertemplate*{frametitle}{rk theme}
+{%
+  \nointerlineskip%
+  \usebeamerfont{headline}%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=1.5ex,dp=0ex]{empty}
+    %\pgfuseshading{beamer@aboveframetitle}%
+  \end{beamercolorbox}%
+  \vskip-.5ex%
+  \nointerlineskip%
+  \begin{beamercolorbox}[wd=\paperwidth,leftskip=.935cm,rightskip=.3cm plus1fil]{frametitle}
+    \usebeamerfont*{frametitle}\insertframetitle%
+      \ifx\insertframesubtitle\@empty%
+        \strut\par%
+      \else
+        \par{\usebeamerfont*{framesubtitle}{\usebeamercolor[fg]{framesubtitle}\insertframesubtitle}\strut\par}%
+      \fi%%
+    \usebeamerfont{headline}%
+    \vskip.5ex
+  \end{beamercolorbox}%
+  \nointerlineskip
+   \ifthenelse{\boolean{HeadLineSep}}{%
+     \begin{beamercolorbox}[wd=\paperwidth,ht=.5ex,dp=0ex]{empty}
+       \pgfuseshading{beamer@belowframetitle}%
+     \end{beamercolorbox}%
+   }%
+   {}%
+ }
+
+% Continuation numbering at right hand side:
+\setbeamertemplate{frametitle continuation}{\emph{(\insertcontinuationcountroman)}}
+
+% To decorate the frametitle if needed:
+\def\FrameTitleDecoration#1{#1}
+
+
+%% Footline
+
+% Redefine the footline. Get the title that used to be in the headline.
+\defbeamertemplate*{footline}{rk theme}
+{%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,ignorebg,%
+      rightskip=.3cm plus1fil]{title in head/foot}
+      \usebeamerfont{title in head/foot}\hskip6pt\llap{\couleuritemc\donotcoloroutermaths$\blacksquare$}\insertshorttitle
+    \end{beamercolorbox}%
+    %\begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    %  \usebeamerfont{author in head/foot}\insertshortinstitute
+    %\end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+      \usebeamerfont{title in head/foot}\insertshortauthor
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.2\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+      % \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+      \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+    \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\newenvironment{besoin}{\begin{alertblock}{Besoin}}{\end{alertblock}}
+\newenvironment{hypothese}{\begin{alertblock}{Hypothèse}}{\end{alertblock}}
+
+%\newenvironment{trans}[1]{\begin{frame}[fragile,environment=trans,allowframebreaks]{#1}}
+\newenvironment{trans}[1]{\begin{frame}[allowframebreaks=0.9,fragile,environment=trans]{#1}%
+    % Put a relax to stop the frame to investigate too much and break some
+    % \LienPDF...
+    \relax}
+  {\end{frame}}
+
+\def\couleurfleche{\color{red}}
+
+\ifpdf
+% There are still issues with PS here:
+\def\belleboite#1{\centerline{\tikz \node
+    [fill=MidnightBlue,draw=MediumOrchid] {\yellow #1}; }}
+\def\belleboite#1{\centerline{\color{MidnightBlue}\pgfnode{rectangle}{south}{\yellow #1}{}{\pgfusepath{fill}}}}
+
+
+\newcommand{\ColorBox}[2]{% args: {color}{content}
+  \centerline{%
+    \begin{tikzpicture}
+      \color{#1}
+      \pgfnode{rectangle}{center}{#2}{}{\pgfusepath{fill}}
+    \end{tikzpicture}%
+  }%
+}
+
+\newcommand{\BlueBox}[1]{\ColorBox{MidnightBlue}{\yellow #1}}
+
+\newcommand{\OrangeBox}[1]{\ColorBox{orange}{#1}}
+
+\newcommand{\WhiteBox}[1]{\ColorBox{white}{#1}}
+
+\else
+\def\belleboite#1{\centerline{\psshadowbox[fillcolor=MidnightBlue,fillstyle=solid,%
+    linecolor=MediumOrchid]{{\yellow #1}}}}
+
+\newcommand{\BlueBox}[1]{\centerline{\psframebox*[fillcolor=MidnightBlue,fillstyle=solid]{#1}}}
+\newcommand{\OrangeBox}[1]{\centerline{\psframebox*[fillcolor=orange,fillstyle=solid]{#1}}}
+\newcommand{\WhiteBox}[1]{\centerline{\psframebox*[fillcolor=white,fillstyle=solid]{#1}}}
+\fi
+%\newcommand{\belleboite}[1]{#1}
+
+%% Rajoute un \strut pour que la couleur résiste à un \item devant...
+\newcommand{\vavers}{\strut{\LARGE\couleurfleche$\leadsto$}\xspace}
+
+\newcommand{\Attention}{\noindent\raisebox{-0.5ex}{\includegraphics[height=\baselineskip]{attention}}\xspace}
+
+% To break the current slide:
+\newcommand{\newslide}{\break}
+
+% To change the background image of a slide:
+\newcommand{\SetImageBackground}[1]{%
+  \setbeamertemplate{background canvas}{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{#1}}%
+  % Remove the backgroung of most decoration to see the image better:
+  \setbeamercolor{palette primary}{bg=}%
+  \setbeamercolor{palette secondary}{bg=}%
+  \setbeamercolor{palette tertiary}{bg=}%
+  \setbeamercolor{palette quaternary}{bg=}%
+}
+
+% To change all the colors of text in a slide:
+\newcommand{\SetAllTextColor}[1]{%
+  \setbeamercolor{normal text}{fg=#1}%
+  \setbeamercolor{structure}{fg=#1}%
+  \setbeamercolor{item}{fg=#1}%
+  \setbeamercolor{itemize}{fg=#1}%
+  \setbeamercolor{itemize item}{fg=#1}%
+  \setbeamercolor{itemize item projected}{fg=#1}%
+  \setbeamercolor{itemize subitem}{fg=#1}%
+  \setbeamercolor{itemize subsubitem}{fg=#1}%
+  \setbeamercolor{itemize/enumerate body}{fg=#1}%
+  \setbeamercolor{itemize/enumerate subbody}{fg=#1}%
+  \setbeamercolor{itemize/enumerate subbody}{fg=#1}%
+  \setbeamercolor{itemize/enumerate subsubbody}{fg=#1}%
+}
+
+\let\itemizer=\itemize
+\let\enditemizer=\enditemize
+\let\itemizet=\itemize
+\let\enditemizet=\enditemize
+\let\itemizec=\itemize
+\let\enditemizec=\enditemize
+
+
+% Improve the tableofcontents to have the list of slides too, if needed:
+% to debug: \show\beamer@subsubsectionintoc
+\def\beamer@tableofcontents[#1]{%
+  \def\beamer@toc@cs{show}%
+  \def\beamer@toc@os{show}%
+  \def\beamer@toc@css{show}%
+  % Used by \beamer@subsubsectionintoc:
+  % given to \beamer@tocifnothide:
+  \def\beamer@toc@oss{show}% if in same section
+  \def\beamer@toc@ooss{show}% if in other section
+  % given to beamer@tocact:
+  \def\beamer@toc@csss{show}% if same section, subsection and subsubsection
+  \def\beamer@toc@osss{show}% if same section, subsection but different subsubsection
+  \def\beamer@toc@oosss{hide}% if same section but different subsection
+  \def\beamer@toc@ooosss{hide}% if not in same section
+  \def\beamer@toc@frametitles{hide}%
+  \def\beamer@toc@framesubtitles{hide}%
+  \beamer@showpartnumber=\c@part%
+  \beamer@pausesectionsfalse%
+  \beamer@pausesubsectionsfalse%
+  \def\beamer@tocsections{<*>}%
+  \setkeys{beamertoc}{firstsection=1}%
+  \setkeys{beamertoc}{#1}%
+  \vspace*{-.5em}{\makeatletter%
+    \pause[0]%
+    \@input{\jobname.toc}%
+    \vfill}%
+  }
+
+% By default we dump the frametitle texto into the toc file:
+\def\RewriteBeamerToc#1{#1}
+% But we may do something else, such as stopping it:
+\def\StopTocOutput{\let\RewriteBeamerToc@Old=\RewriteBeamerToc}
+% or resume it:
+\def\NormalTocOutput{\let\RewriteBeamerToc=\RewriteBeamerToc@Old}
+
+\define@key{beamertoc}{frametitles}[]{\def\beamer@toc@frametitles{show}}
+% To be implemented...
+\define@key{beamertoc}{framesubtitles}[]{\def\beamer@toc@framesubtitles{show}}
+
+% Change the frametitle to be included in the table-of-content:
+
+% In case of modification of the following, have a look to the other
+% definition after \mode<presentation>
+\long\def\beamer@@frametitle[#1]#2{%
+  \beamer@ifempty{#2}{}{%
+    \gdef\insertframetitle{{#2\ifnum\beamer@autobreakcount>0\relax{}\space\usebeamertemplate*{frametitle continuation}\fi}}%
+  \gdef\beamer@frametitle{#2}%
+  % Add the title only for the first frame:
+  \ifnum\beamer@autobreakcount<2\relax\addtocontents{toc}{\RewriteBeamerToc{\protect\beamer@frametitleintoc{\the\c@section}{#1}{#2}{\the\c@page}{\the\c@part}}}\fi%
+  \gdef\beamer@shortframetitle{#1}%
+}%
+}
+
+% Need to think about the args really needed...
+\def\beamer@frametitleintoc#1#2#3#4#5{%
+  \ifx\beamer@toc@frametitles\beamer@hidetext
+  \else
+  % If the frametitle output is asked for:
+  \ifnum\c@tocdepth>1%
+  % This should be a template...
+  {\tiny#2\hfill #4\par}
+  \fi
+  \fi
+}
+
+
+\AtBeginDocument{
+  \def\couleuritemr{\color{Coral}}
+  \def\couleuritemc{\color{AMD-light-blue}}
+  \def\couleuritemt{\color{AMD-light-green}}
+  \setbeamertemplate{itemize item}{{\couleuritemr\donotcoloroutermaths$\bullet$}}
+  \setbeamertemplate{itemize subitem}{{\couleuritemt\donotcoloroutermaths$\blacktriangleright$}}
+  \setbeamertemplate{itemize subsubitem}{{\couleuritemc\donotcoloroutermaths$\blacksquare$}}
+}
+
+% Number of coulumns in outline slides:
+\newcommand{\OutlineColumnNumbers}{2}
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSection[]
+{
+  % Do not output the outline frame itself in the TOC
+  \StopTocOutput
+  { % Open a block to keep background setting local to this slide
+    \ifthenelse{\isundefined{\SectionBackground}}{}{\SectionBackground}%
+    \begin{frame}<presentation>{\outlinename}
+      \ifthenelse{\OutlineColumnNumbers>1}{\begin{multicols}{\OutlineColumnNumbers}}{}
+        \OutlineFontSize
+        \tableofcontents[currentsection]
+        \ifthenelse{\OutlineColumnNumbers>1}{\end{multicols}}{}
+    \end{frame}
+  }
+ \NormalTocOutput
+}
+
+\AtBeginSubsection[]
+{%
+  % Do not output the outline frame itself in the TOC
+  \StopTocOutput
+  { % Open a block to keep background setting local to this
+    \ifthenelse{\isundefined{\SubsectionBackground}}{}{\SubsectionBackground}%
+    \begin{frame}<presentation>{\outlinename}
+      \ifthenelse{\OutlineColumnNumbers>1}{\begin{multicols}{\OutlineColumnNumbers}}{}
+        \OutlineFontSize
+        \tableofcontents[currentsection,currentsubsection]
+        \ifthenelse{\OutlineColumnNumbers>1}{\end{multicols}}{}
+    \end{frame}
+  }
+  \NormalTocOutput
+}
+
+\AtBeginSubsubsection[]
+{%
+  % Do not output the outline frame itself in the TOC
+  \StopTocOutput
+  { % Open a block to keep background setting local to this
+    \ifthenelse{\isundefined{\SubsubsectionBackground}}{}{\SubsubsectionBackground}%
+    \begin{frame}<presentation>{\outlinename}
+      \ifthenelse{\OutlineColumnNumbers>1}{\begin{multicols}{\OutlineColumnNumbers}}{}
+        \OutlineFontSize
+        \tableofcontents[currentsubsubsection]
+        \ifthenelse{\OutlineColumnNumbers>1}{\end{multicols}}{}
+      \tableofcontents[currentsection,currentsubsection,currentsubsubsection]
+    \end{frame}
+  }
+  \NormalTocOutput
+}
+
+
+% Add Index back from book.cls:
+\newenvironment{theindex}
+               {\parindent\z@
+                \parskip\z@ \@plus .3\p@\relax
+                \columnseprule \z@
+                \columnsep 35\p@
+                \let\item\@idxitem}
+               {}
+\newcommand\@idxitem{\par\hangindent 40\p@}
+\newcommand\subitem{\@idxitem \hspace*{20\p@}}
+\newcommand\subsubitem{\@idxitem \hspace*{30\p@}}
+\newcommand\indexspace{\par \vskip 10\p@ \@plus5\p@ \@minus3\p@\relax}
+
+
+\renewcommand{\itemize}[1][]{%
+  \beamer@ifempty{#1}{}{\def\beamer@defaultospec{#1}}%
+  % Remove the limitation
+  %\ifnum \@itemdepth >2\relax\@toodeep\else
+    \advance\@itemdepth\@ne
+    \beamer@computepref\@itemdepth% sets \beameritemnestingprefix
+    \usebeamerfont{itemize/enumerate \beameritemnestingprefix body}%
+    \usebeamercolor[fg]{itemize/enumerate \beameritemnestingprefix body}%
+    \usebeamertemplate{itemize/enumerate \beameritemnestingprefix body begin}%
+    \list
+      {\usebeamertemplate{itemize \beameritemnestingprefix item}}
+      {\def\makelabel##1{%
+          {%
+            \hss\llap{{%
+                \usebeamerfont*{itemize \beameritemnestingprefix item}%
+                \usebeamercolor[fg]{itemize \beameritemnestingprefix item}##1}}%
+          }%
+        }%
+      }
+  %\fi%
+  \beamer@cramped%
+  \raggedright%
+  \beamer@firstlineitemizeunskip%
+}
+
+
+\mode<presentation>
+
+% Allow frame title decoration
+\long\def\beamer@@frametitle[#1]#2{%
+  \beamer@ifempty{#2}{}{%
+    \gdef\insertframetitle{{\FrameTitleDecoration{#2}
+          % Allow line break with right flush:
+          % Still buggy :-(
+          \penalty9999 \hbox{}\nobreak\hfill
+          % Add the continuation number at the end of line:
+          \ifnum\beamer@autobreakcount>0\relax{}\space\usebeamertemplate*{frametitle continuation}\fi}}%
+  \gdef\beamer@frametitle{#2}%
+  % Add the title only for the first frame:
+  \ifnum\beamer@autobreakcount<2\relax\addtocontents{toc}{\RewriteBeamerToc{\protect\beamer@frametitleintoc{\the\c@section}{#1}{#2}{\the\c@page}{\the\c@part}}}\fi%
+  \gdef\beamer@shortframetitle{#1}%
+}%
+}
+
+
+\mode<beamer>
+
+% Rajoute des points mais trop long:
+%\usetheme{Singapore}
+\ifthenelse{\boolean{WhiteBackground}}{%
+  \AtBeginDocument{%
+    \setbeamercolor{palette primary}{bg=}%
+    \setbeamercolor{palette secondary}{bg=}%
+    \setbeamercolor{palette tertiary}{bg=}%
+    \setbeamercolor{palette quaternary}{bg=}%
+  }
+}{%
+  \usecolortheme[overlystylish]{albatross}
+
+
+  %% Colorer background:
+  \ifthenelse{\boolean{BlackBackground}}{% Override the shaded background from
+                                % overlystylish/albatross:
+    % By default it is a solid stuff, with "background canvas" inheriting
+    % "normal text" color:
+    \setbeamertemplate{background canvas}[default]
+    % Force a black background:
+    \setbeamercolor{background canvas}{bg=black}
+  }{\ifthenelse{\boolean{ShadedBackground}}{% Override the shaded background from
+                                % overlystylish/albatross:
+    \setbeamertemplate{background canvas}[vertical shading][bottom=black,top=black,middle=blue!40!black,midpoint=0.1]
+}{}}
+
+
+  %\setbeamercolor*{normal text}{fg=white}
+
+  %\useoutertheme{split}
+  %\useoutertheme{shadow}
+
+  % More visible
+  \setbeamercolor*{normal text}{fg=white}
+
+  \setbeamercolor{palette secondary}{use={structure,normal text},fg=structure.fg,bg=normal text.bg!60!violet}
+  \setbeamercolor{palette tertiary}{use={structure,normal text},fg=structure.fg,bg=normal text.bg!90!orange}
+  \setbeamercolor{palette quaternary}{use={structure,normal text},fg=structure.fg,bg=normal text.bg!30!black}
+
+
+  \setbeamercolor*{block body}{bg=normal text.bg!90!violet}
+  \setbeamercolor*{block body alerted}{bg=normal text.bg!90!red}
+  \setbeamercolor*{block body example}{bg=normal text.bg!90!orange}
+  %\setbeamercolor*{block title}{parent=structure,bg=normal text.bg!60!orange}
+  \setbeamercolor*{block title}{parent=structure,bg=red}
+  \setbeamercolor*{block title alerted}{use={normal text,alerted text},fg=alerted text.fg!75!normal text.fg,bg=normal text.bg!60!red}
+  \setbeamercolor*{block title example}{use={normal text,example
+      text},fg=example text.fg!75!normal text.fg,bg=normal text.bg!75!black}
+
+  %\pscharpath[fillstyle=gradient,gradmidpoint=0.5,%
+   %     gradbegin=turquoiseB,gradend=green,gradangle=90,%
+    %    linestyle=none]{#1}}
+}
+
+%\setbeamercolor{palette primary}{use={structure,normal text},fg=structure.fg,bg=normal text.bg!75!red}
+\setbeamercolor{palette primary}{use={structure,normal text},fg=normal
+  text.fg,bg=MidnightBlue}
+% Use a color in the frame title. A nasty side-effect is that the
+% copy-paste does not work with the generated PDF on the titles...
+\def\FrameTitleDecoration#1{\ifpdf
+  #1
+  \else
+  \pscharpath[fillstyle=gradient,gradmidpoint=0.5,%
+      gradbegin=Turquoise2,gradend=green,gradangle=90,%
+      linestyle=none]{%
+        #1%
+      }\fi}
+
+% Remove the background since it is done by the previous \FrameTitleDecoration:
+\setbeamercolor{frametitle}{fg=AMD-light-blue,bg={}}
+\setbeamercolor{framesubtitle}{fg=AMD-light-green,bg=frametitle.bg}
+
+
+
+% To add an image as the left sidebar:
+\ifthenelse{\boolean{LeftSideBar}}{% The image to use as left sidebar:
+    \pgfdeclareimage[width=8mm,height=0.73\hsize]{TheLeftSideBarImage}{Art/nVidia/GTC_haut}%
+    % \setbeamertemplate{sidebar canvas left}{\vskip
+    %   0.08\hsize\includegraphics[width=8mm,height=0.75\hsize]{Art/nVidia/GTC_haut_fin}}
+    % Declare a 0 width sidebar to avoid shifting all the slide content
+    \setbeamersize{sidebar width left=0cm}%
+    % \setbeamertemplate{sidebar canvas left}[vertical shading]
+    % [top=palette primary.bg,middle=white,bottom=palette primary.bg]
+    \setbeamertemplate{sidebar canvas left}{%
+      % Should be more parametric... Shitf down the image:
+      \vskip 0.08\hsize%
+      % Insert the image:
+      \pgfuseimage{TheLeftSideBarImage}%
+    }}
+  {% Else do nothing...
+  }
+
+
+\mode<handout>
+
+
+% For a black & white printer:
+\usecolortheme{seagull}
+
+
+\mode
+<all>
+
+% Use less background in transparency (default is 85%) because it is not
+% clear enough on the screen or on the B&W handouts:
+% Used by progressive uncovered things.
+\setbeamercovered{transparent=20}

@@ -1,0 +1,7 @@
+\ProvidesPackage{getVersion}[2005/03/15 To get the RCS/SCCS/CVS... version
+of a file to display]
+
+
+%% Récupère le numéro de version RCS :
+\def\getRCSVersion Revision: #1 {\def\Version{#1}}
+\def\getRCSDollarsVersion$#1${\getRCSVersion#1}

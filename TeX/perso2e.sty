@@ -1,0 +1,694 @@
+% Des changements a` french.sty :
+%\newcommand{\mesmodifs}{%
+%\def\fup##1{\leavevmode\raise+0.55ex\hbox{\sm@ller##1}}%
+%   Supprime le \kern+.17em apre`s \fup.
+
+% Hack french.sty :
+
+% En attendant un french.sty correct, au moins pour V3.19 :
+%   \def\@fsc##1##2/{\uppercase{##1}\lowercase{##2}}%small caps for names \fsc
+%   \def\fsc##1{\ifFMA\leavevmode{\sc\hbox{\expandafter% might be a diacritic
+%                                          \@fsc##1/}}\else\@fscORI\fi}%
+%                                         % allways lower case small caps \lsc
+%   \def\lsc##1{\ifFMA\leavevmode{\sc\hbox{\lowercase{##1}}}\else\@lscORI\fi}%
+%}
+
+% Mes petites macros habituelles,
+%   Ronan.Keryell@ens.fr
+
+% Taille alloue'e en gros pour les nume'ros de lignes dans tgrind :
+\newcommand{\taillenumerotgrind}{1cm}
+\newcommand{\margedestgrind}{0.8cm}
+
+% Abbre'viations courantes :
+\newcommand{\apriori}{{\em a priori}}
+\newcommand{\afortiori}{{\em a fortiori}}
+\newcommand{\aposteriori}{{\em a posteriori}}
+\newcommand{\ie}{{\em ie}}
+\newcommand{\defacto}{{\em de facto}}
+\newcommand{\adhoc}{{\em ad hoc}}
+\newcommand{\insitu}{{\em in situ}}
+\newcommand{\infine}{{\em in fine}}
+\newcommand{\texto}{{\em texto}}
+\newcommand{\exnihilo}{{\em ex nihilo}}
+
+% Le ij hollandais:
+
+%\newcommand{\ij}{\mbox{i$\!$j}}
+
+% En attendant le nouveau LaTeX:
+\def\figuresepname{}
+
+% Pour le logo Metafont (pas portable en taille...) :
+\font\manualfont=manfnt
+\newcommand{\MF}{{\manualfont META}\-{\manualfont FONT}}
+
+%\catcode`@=11
+\newbox\une@boiteperso
+\newbox\une@autreboiteperso
+
+% Je suppose qu'on fonctionne avec french.sty juste avant.
+% Comme french.sty ne de'marre qu'au \begin{document}, donc RAS.
+%\english
+
+% Pour faire des index avec makeindex et pour la biblio :
+\def\bold#1{{\bf #1}}
+\def\voir#1#2{{\it voir }#1}
+% En fonction du style french, par de'faut en anglais :
+%\@ifundefined{ifFTR}{\let\ifFTR\iffalse}{}
+% Si on ne fait pas de traduction de mots en franc,ais ou que cette notion
+%   n'existe pas, on fait tout en anglais :
+\ifx\ifFTR\iftrue\else\let\ifFTR\iffalse\fi
+\newcommand{\recuperableftp}[1]{\ifFTR
+        R\'ecup\'erable par {\tt ftp anonymous} sur la machine \texttt{#1}%
+    \else
+        Available by {\tt ftp anonymous} on \texttt{#1}%
+    \fi}
+\newcommand{\recuperablewww}[1]{\ifFTR
+        R\'ecup\'erable par {\sc www} à \htmladdnormallink{\texttt{#1}}{#1}%
+    \else
+        Available by {\sc www} at \htmladdnormallink{\texttt{#1}}{#1}%
+    \fi}
+\newcommand{\recuperableftpfichier}[2]{\ifFTR
+        R\'ecup\'erable par {\tt ftp anonymous} sur la machine {\tt #1}
+        dans le fichier {\tt #2}%
+    \else
+        Available by {\tt ftp anonymous} on {\tt #1} in the file {\tt #2}%
+    \fi}
+\newcommand{\recuperablenetlib}{\ifFTR
+        R\'ecup\'erable par {\tt netlib}%
+    \else
+        Available via {\tt netlib}%
+    \fi}
+\def\voircite{{\it Voir }\cite}
+
+% Pour mettre une boi^te \fbox autour de quelque chose en \tt :
+\newcommand{\operateur}[1]{\fbox{\tt #1}}
+
+% Pour un retour au vrai \rm (cmr) :
+\newcommand{\rmrm}{\series{m}\shape{n}\rm}
+
+\newcounter{XItmp}
+
+% Un 11 en chiffres romains pour l'universite' d'Orsay.
+\def\XI{\setcounter{XItmp}{11}\Roman{XItmp}}
+
+
+% Pour afficher le 10eme: \ord{10}, les 1eres: \ord{1}(es):
+%\def\ord#1#2{\@ifnextchar({\orde{#1}{#1}}{\orde{#1}{#1}()}}
+\newcommand{\ord}[2]{\orde{#1}{#1}{#2}}
+% Idem mais en chiffres romains:
+%\def\ordr#1{\setcounter{XItmp}{#1}\@ifnextchar({\orde{#1}{\Roman{XItmp}}}{\orde{#1}{\Roman{XItmp}}()}}
+\newcommand{\ordr}[2]{\setcounter{XItmp}{#1}\orde{#1}{\Roman{XItmp}}{#2}}
+
+% Pour afficher les 1er, etc.
+%\def\eme{$^{\rm \grave eme}$}
+%\def\emes{$^{\rm \grave eme}$}
+\newcommand{\eme}{\up{\`eme}}
+\newcommand{\emes}{\up{\`emes}}
+\newcommand{\neme}[1]{\up{\`eme#1}}
+\newcommand{\er}{\up{er}}
+\newcommand{\ers}{\up{ers}}
+\newcommand{\ere}{\up{\`ere}}
+\newcommand{\eres}{\up{\`eres}}
+
+
+% Ce qu'on est oblige' de faire, tout de me^me!
+\newif\ifchaine
+\def\testchaine#1#2{\def\testchainetruc{#1}\def\testchainemachin{#2}\ifx\testchainetruc\testchainemachin\chainetrue
+\else\chainefalse\fi}
+
+\newcommand{\orde}[3]{\ifnum#1=1\testchaine{#3}e\ifchaine
+        #2\ere \else\testchaine{#3}s\ifchaine
+        #2\ers \else\testchaine{#3}{es}\ifchaine
+        #2\eres \else #2\er \fi\fi\fi\else #2\neme#3\fi}
+
+% Calcule la largeur d'une ligne:
+\if@twocolumn
+    \newdimen\dlargeurligne
+    \dlargeurligne\textwidth
+    \advance\dlargeurligne by -\columnsep
+    \divide\dlargeurligne by 2
+    \newcommand{\largeurligne}{\the\dlargeurligne}
+\else
+    \newcommand{\largeurligne}{\the\textwidth}
+\fi
+
+
+% Pour la nume'rotation a` la franc,aise : on peut changer du romain minuscule
+%   aux chiffres arabes et vice-versa.
+% Le changement de nume'rotation est pris en compte au prochain
+%   \cleardoublepage ou \cleardoublepageeven (qui peuvent e^tre contenus dans
+%   des commandes comme \chapter, \maketitle, etc.)
+%
+\newcount\c@pageautre \c@pageautre=-1
+%
+% Pour e'changer \c@pageautre et \c@page sans utiliser aucune de'finition
+%   ou compteur interme'diaire (pour faire plaisir a` Bernard Gaulle :-) ) :
+%
+\def\@echangenumeropage{\global\advance\c@page by \c@pageautre%
+    \global\advance\c@pageautre by -\c@page%
+    \global\advance\c@page by \c@pageautre%
+    \global\c@pageautre=-\c@pageautre%
+    %\the\c@page,\the\c@pageautre% Pour le debug...
+    % Lors du premier changement, il est impossible de recommencer a` compter
+    % a` partir de 1 si le nume'ro pre'ce'dent e'tait impair. Dans ce cas on
+    % recommence a` 2 seulement. Je n'ai pas trouve' mieux dans ce cas pre'cis.
+    \ifnum\c@pageautre=1%
+    \else% RAS : on n'avait pas commence' a` compter.
+        \ifnum\c@pageautre=-1%
+        \else% RAS: idem.
+            % Dans l'autre cas, \c@pageautre a de'ja` e'te' incre'mente' de 1
+            %   par le passage a` 1.
+            \advance\c@pageautre by \c@page% E'conomise un compteur...
+            \ifodd\c@pageautre% Ils ont la me^me parite', compte tenu de
+            %   l'incre'mentation dans \output :
+                % On rajoute 1 pour assurer la continuite' de la
+                %   parite'.
+                \ifnum\c@page<0\advance\c@page by -1
+                \else\advance\c@page by 1
+                \advance\c@pageautre by -\c@page% Restaure \c@pageautre.
+                \fi
+            \else
+                %   sinon c'est parfait !
+                \advance\c@pageautre by -\c@page% Restaure \c@pageautre.
+            \fi
+        \fi
+    \fi}
+
+%
+\def\numerodepageen#1{\global\let\perso@vcleardoublepage=\cleardoublepage%
+    \let\perso@vcleardoublepageeven=\cleardoublepageeven%
+    \gdef\cleardoublepage{\perso@vcleardoublepage%
+        #1\@retour@cleardoublepage}%
+    \gdef\cleardoublepageeven{\perso@vcleardoublepageeven%
+        #1\@retour@cleardoublepage}}
+%
+\def\@retour@cleardoublepage{\@echangenumeropage%
+    \global\let\cleardoublepage=\perso@vcleardoublepage%
+    \global\let\cleardoublepageeven=\perso@vcleardoublepageeven}%
+%
+% L'interface utilisateur :
+\def\numerodepageenarabe{\numerodepageen{\gdef\thepage{\@arabic\c@page}}}
+\def\numerodepageimmediatenarabe{\@echangenumeropage\gdef\thepage{\@arabic\c@page}}
+\def\numerodepageenromain{\numerodepageen{\gdef\thepage{{\@roman{-\c@page}}}}}
+\def\numerodepageimmediatenromain{\@echangenumeropage\gdef\thepage{{\@roman{-\c@page}}}}
+
+% Pour avoir les accents franc,ais dans les tabbings :
+\let\tabrj\@tabrj% Ancien \`
+\let\tablab\@tablab% Ancien \'
+\def\tabbingfrancais{\let\tabvieuxaigu\' \let\tabvieuxgrave\`
+\begin{tabbing}\gdef\'{\a'}\gdef\`{\a`}}
+\def\endtabbingfrancais{\end{tabbing}\let\'\tabvieuxaigu
+\let\`\tabvieuxgrave}
+
+% De'finit le Sans-Se'rif Demi Gras Condence' :
+\newcommand{\sfsbc}{\fontseries{sbc}\fontfamily{\sfdefault}\selectfont}
+
+% De'finit la grosseur des gros traits dans les tableaux:
+\def\tabgrostrait{2}
+
+% tabcentre permet d'avoir un tableau centre'.
+% La minipage est ne'cessaire pour avoir des footnote dans le tableau.
+\newcommand{\tabcentretempo}{rien}  % Initialise la variable.
+\newenvironment{tabcentre}[2]{
+    \renewcommand{\tabcentretempo}{{#2}}
+    \begin{table}
+    \caption{\tabcentretempo}
+    \bigskip
+    \begin{minipage}{\hsize}
+    \centering
+    \begin{tabular}{#1}
+    }{
+    \end{tabular}
+    \end{minipage}
+    \end{table}
+}
+\newenvironment{tabcentre*}[2]{
+    \renewcommand{\tabcentretempo}{{#2}}
+    \begin{table*}
+    \caption{\tabcentretempo}
+    \bigskip
+    \begin{minipage}{\hsize}
+    \centering
+    \begin{tabular}{#1}
+    }{
+    \end{tabular}
+    \end{minipage}
+    \end{table*}
+}
+
+% Pour inclure des programmes:
+%
+\newcommand{\tginput}{\@ifnextchar[{\@tginput}{\@tginput[0]}}
+
+\newif\if@tginputcentre
+\newif\if@tginputligne
+\newif\if@tginputnumero
+
+% Fausse version :
+\def\@tginput[#1]#2{%
+    % Analyse les arguments :
+    \@tginputcentrefalse\@tginputlignefalse\@tginputnumerofalse%
+    \@tfor \@tempa :=#1\do%
+        {\if\@tempa c\@tginputcentretrue\fi%
+        \if\@tempa l\@tginputlignetrue\fi%
+        \if\@tempa n\@tginputnumerotrue\fi%
+    }%
+    \if@tginputligne
+        \ifhmode
+            \vspace{0.3\baselineskip}%\vspace{-0.5\baselineskip}%
+        \par\fi
+        \if@tginputcentre\vbox\bgroup\fi% Le vbox implique le vspace ci-dessus.
+        \vbox{\noindent\rule{\hsize}{\arrayrulewidth}}\nopagebreak%
+        \if@tginputcentre\vspace{-0.6\baselineskip}\nopagebreak\fi%
+    \else
+        \ifhmode
+            \if@tginputcentre\vspace{-0.5\baselineskip}%
+            \else
+                \smallskip\par
+            \fi
+        \fi
+    \fi%
+    \def\@tempa{}%
+    \if@tginputnumero\def\@tempa{[n]}\else%
+        \if@tginputcentre\def\@tempa{[c]}\fi\fi%
+    \xdef\@tempa{\noexpand\begin{tgrind}\@tempa}\@tempa%
+        \input{#2} \end{tgrind}%
+    \if@tginputligne\nopagebreak%
+    \if@tginputcentre\vspace{-1.6\baselineskip}\par\nopagebreak\fi%
+        \vbox{\noindent\rule[0.8\baselineskip]{\hsize}{\arrayrulewidth}}%
+    \if@tginputcentre\egroup\fi%
+    \vspace{-0.9\baselineskip}\fi%
+}
+
+\def\@tginput[#1]#2{%
+    % Analyse les arguments :
+    \@tginputcentrefalse\@tginputlignefalse\@tginputnumerofalse%
+    \@tfor \@tempa :=#1\do%
+        {\if\@tempa c\@tginputcentretrue\fi%
+        \if\@tempa l\@tginputlignetrue\fi%
+        \if\@tempa n\@tginputnumerotrue\fi%
+    }%
+    \if@tginputligne
+        \ifhmode
+            \vspace{0.3\baselineskip}%\vspace{-0.5\baselineskip}%
+        \par\fi
+        \if@tginputcentre\vbox\bgroup\fi% Le vbox implique le vspace ci-dessus.
+        \vbox{\noindent\rule{\hsize}{\arrayrulewidth}}\nopagebreak%
+        \if@tginputcentre\vspace{-\abovedisplayskip}\nopagebreak\fi%
+    \else
+        \ifhmode
+            \if@tginputcentre\vspace{-0.5\baselineskip}%
+            \else
+                \smallskip\par
+            \fi
+        \fi
+    \fi%
+    \def\@tempa{}%
+    \if@tginputnumero\def\@tempa{[n]}\else%
+        \if@tginputcentre\def\@tempa{[c]}\fi\fi%
+    \xdef\@tempa{\noexpand\begin{tgrind}\@tempa}\@tempa%
+        \input{#2} \end{tgrind}%
+    \if@tginputligne\nopagebreak%
+    \if@tginputcentre\vskip-3\belowdisplayskip\fi% Pourquoi 3 ???
+        \noindent\rule{\hsize}{\arrayrulewidth}%
+    \if@tginputcentre\egroup\fi%
+    \fi%\vspace{-0.9\baselineskip}\fi%
+}
+
+\newcommand{\figtginput}{\@ifnextchar[{\@figtginput}{\@figtginput[0]}}
+
+\def\@figtginput[#1]#2#3{%
+    \begin{figure}
+    \tginput[#1]{#2}
+    \caption{#3}
+    \end{figure}
+}
+
+\newcommand{\tgsninput}[1]{
+    \ifhmode\smallskip\par\fi
+    \noindent\rule{\hsize}{\arrayrulewidth}\medskip
+    \begin{tgrind} \input{#1} \end{tgrind}
+    \noindent\rule{\hsize}{\arrayrulewidth} \medskip\\
+}
+\newcommand{\tgcsninput}[1]{
+    \ifhmode\smallskip\\ \fi
+    \rule[0.5\baselineskip]{\hsize}{\arrayrulewidth}\nopagebreak%
+    \vspace{-0.5\baselineskip}\\
+    \nopagebreak\centerline{\vbox{\begin{tgrind}[c] \input{#1} \end{tgrind}}}
+    \nopagebreak\vbox{\noindent\rule[0.5\baselineskip]
+        {\hsize}{\arrayrulewidth}\vspace{-0.5\baselineskip}\\}
+}
+
+% Pour avoir une table avec une ligne horizontale de part et d'autre :
+%
+\newenvironment{tableligne}[1]{\begin{table} \caption{#1} \noindent\rule{\hsize}{\arrayrulewidth}}{\noindent\rule{\hsize}{\arrayrulewidth}\end{table}}
+
+% Idem pour une figure :
+%
+\newenvironment{figureligne}[1]{\def\@captionfigureligne{#1}\begin{figure} \noindent\rule{\hsize}{\arrayrulewidth}}{\vskip-\lastskip
+\noindent\rule{\hsize}{\arrayrulewidth}\caption{\@captionfigureligne}
+\end{figure}}
+
+% Pour rajouter des objets centre's, globalement aligne's dans un tableau :
+%
+%\newcommand{\centrealigne}[1]{$\vcenter{\normalbaselines%
+%   \def\\{\egroup\cr\hbox\bgroup}% Sordide. Pour mettre chaque ligne dans une
+%   % hbox...
+%   \ialign{\hfil$##$\hfil&&\quad\hfil$##$\hfil\crcr% Pris dans \matrix...
+%   \mathstrut\crcr\noalign{\kern-0.7\baselineskip}% Compense le \mathstrut
+%   \hbox\bgroup#1\egroup\crcr%
+%   \mathstrut\crcr\noalign{\kern-0.7\baselineskip}% Idem.
+%}}$}
+\newcommand{\centrealigne}[1]{$\vcenter{\normalbaselines
+    \let\\=\cr
+    \halign{\hfil\strut##\hfil\cr #1\crcr}}$}
+
+% Pour rajouter des objets tasse's a` gauches ou a` droite dans un tableau :
+%
+\newcommand{\tassegauche}[1]{$\vcenter{\normalbaselines
+    \let\\=\cr
+    \halign{\strut##\hfil\cr #1\crcr}}$}
+\newcommand{\tassedroite}[1]{$\vcenter{\normalbaselines
+    \let\\=\cr
+    \halign{\hfil\strut##\cr #1\crcr}}$}
+
+
+% Une belle citation, avec une barre verticale a` gauche :
+%
+
+\def\bellecitationrulewidth{\arrayrulewidth}
+\def\decalebellecitation{0.08}% En fraction de \hsize.
+\newdimen\@bellecitationdim
+\newdimen\parindentorig
+\parindentorig=\parindent
+\newenvironment{bellecitation}[1]{\def\@signaturebellecitation{#1}%
+        \footnotesize\fontfamily{cmssq}\selectfont%
+        \@bellecitationdim=\hsize%
+        \advance\@bellecitationdim by -2\parindentorig%
+        \advance\@bellecitationdim by -\decalebellecitation\hsize%
+        \vbox\bgroup\hbox \bgroup\indent\vrule width \bellecitationrulewidth%
+        \kern \decalebellecitation\hsize \kern -\parindentorig%
+        \vbox\bgroup\vskip 4\bigskipamount%
+    \begin{minipage}{\@bellecitationdim}}%
+    {\end{minipage}\egroup\egroup\egroup\par%
+    \let\\=\@@par\let\par=\@@par\parfillskip=\z@%
+    \leftskip=0.3\hsize plus 1fil\relax\rightskip=3\parindentorig%
+    \@signaturebellecitation\vskip 4\bigskipamount\par%
+    % De'cale ainsi la signature.
+}
+
+
+% Pour mettre quelque chose en fin de chapitre :
+%   adaptation du TeXbook p. 106.
+\newcommand{\findechapitre}[1]{\vskip-\lastskip%
+\nopagebreak\vfill\pagebreak[0]\bigskip\vbox{}\nopagebreak\vfill\hfill#1}
+
+
+% Pour un enumere en franc,ais qui utilise les \quando de french.sty :
+%
+\def\labelfrenchenumi{\thefrenchenumi}
+\def\thefrenchenumi{\quando={\arabic{enumi}}}
+\def\labelfrenchenumii{\thefrenchenumii}
+\def\thefrenchenumii{\quando={\arabic{enumii}}}
+\def\labelfrenchenumiii{\thefrenchenumiii}
+\def\thefrenchenumiii{\quando={\arabic{enumiii}}}
+\def\labelfrenchenumiv{\thefrenchenumiv}
+\def\thefrenchenumiv{\quando={\arabic{enumiv}}}
+
+\def\enumere{\ifnum \@enumdepth >3 \@toodeep\else
+    \advance\@enumdepth \@ne
+    \edef\@enumctr{enum\romannumeral\the\@enumdepth}\list
+    {\csname labelfrench\@enumctr\endcsname}{\usecounter
+    {\@enumctr}\def\makelabel##1{\hss\llap{##1}}}\fi}
+
+\let\endenumere=\endlist
+
+% Pour inclure des figures:
+%
+\def\figinput#1#2{\begin{figure}\input{#1} \caption{#2} \end{figure}}
+
+\def\figinputcenter#1#2{\begin{figure}\centering\input{#1}
+    \caption{#2}\end{figure}}
+
+\def\sfiginput#1#2{\begin{figure}\shabox{\input{#1}}\caption{#2}
+    \end{figure}}
+
+\def\sfiginputcenter#1#2{\begin{figure}\centering\shabox{\input{#1}}\caption{#2}
+    \end{figure}}
+
+% Pour inclure des figures en PostScript:
+%
+\def\figepsfcenter#1#2{
+    \begin{figure}
+    \centering
+    \includegraphics{#1}
+    \caption{#2}
+    \end{figure}
+}
+
+\def\sfigepsfcenter#1#2{
+    \begin{figure}
+    \centering
+    %\shabox{\epsf{#1}}
+    \shabox{\includegraphics{#1}}
+    \caption{#2}
+    \end{figure}
+}
+
+\def\figepsflarge#1#2{
+    \begin{figure}
+    %\centering
+    %\mbox{\epsf{#1}<\hsize,0pt>}
+    \mbox{\includegraphics[width=\hsize]{#1}}
+    \caption{#2}
+    \end{figure}
+}
+
+\def\figepsflargegauche#1#2{
+    \begin{figure}
+    \includegraphics[width=\hsize,angle=90]{#1}
+    \caption{#2}
+    \end{figure}
+}
+
+\def\figepsflargedroite#1#2{
+    \begin{figure}
+    \includegraphics[width=\hsize,angle=-90]{#1}
+    \caption{#2}
+    \end{figure}
+}
+
+\def\sfigepsflarge#1#2{
+    \begin{figure}
+    %\centering
+    %\shabox{\epsf{#1}<\hsize,0pt>}
+    \shabox{\includegraphics[width=\hsize]{#1}}
+    \caption{#2}
+    \end{figure}
+}
+
+
+%% Inclure du PostScript :
+
+\newcommand{\psfighautcentre}[1]{%
+  \centerline{\includegraphics[height=0.95\vsize]{#1}}%
+  }
+
+\newcommand{\psfigtaille}[2]{%
+  \begin{center}
+    \mbox{\includegraphics[width=#2]{#1}}
+  \end{center}%
+  }
+
+\newcommand{\psfiglarge}[1]{%
+  \begin{center}
+    \includegraphics[width=\hsize]{#1}
+  \end{center}%
+  }
+
+
+% Pour faire tourner de pi/2 du texte pouvant contenir des \\:
+%
+\newcommand{\rotgauche}[1]{\rotate{\begin{tabular}{l} #1 \end{tabular}}}
+
+
+%
+%   Pour la bibliographie:
+%
+\newcommand{\nouvellethese}{\ifFTR Th\`ese\else PhD Thesis\fi}
+\newcommand{\andname}{\ifFTR et\else and\fi}
+\newcommand{\editorname}{\ifFTR \'editeur\else editor\fi}
+\newcommand{\editornames}{\ifFTR \'editeurs\else editors\fi}
+\newcommand{\volumename}{\ifFTR volume\else volume\fi}
+\newcommand{\Volumename}{\ifFTR Volume\else volumes\fi}
+\newcommand{\ofname}{\ifFTR de\else of\fi}
+\newcommand{\numbername}{\ifFTR num\'ero\else number\fi}
+\newcommand{\Numbername}{\ifFTR Num\'ero\else Number\fi}
+\newcommand{\inname}{\ifFTR dans\else in\fi}
+\newcommand{\Inname}{\ifFTR Dans\else In\fi}
+\newcommand{\editionname}{\ifFTR \'edition\else edition\fi}
+%\def\pagename{\ifFTR page\else page \fi} de'ja` dans french.sty.
+\newcommand{\pagesname}{\ifFTR pages\else pages\fi}
+%\newcommand{\chaptername}{\ifFTR chapitre\else  \fi} de'ja` dans french.sty.
+\newcommand{\technicalreportname}{\ifFTR Rapport Technique\else Technical
+    Report\fi}
+\newcommand{\revisionname}{\ifFTR R\'evision\else Revision\fi}
+\newcommand{\janname}{\ifFTR janvier\else January\fi}
+\newcommand{\febname}{\ifFTR f\'evrier\else February\fi}
+\newcommand{\marname}{\ifFTR mars\else March \fi}
+\newcommand{\aprname}{\ifFTR avril\else April\fi}
+\newcommand{\mayname}{\ifFTR mai\else May\fi}
+\newcommand{\junname}{\ifFTR juin\else June\fi}
+\newcommand{\julname}{\ifFTR juillet\else July\fi}
+\newcommand{\augname}{\ifFTR ao\^ut\else August\fi}
+\newcommand{\sepname}{\ifFTR septembre\else September\fi}
+\newcommand{\octname}{\ifFTR octobre\else October\fi}
+\newcommand{\novname}{\ifFTR novembre\else November\fi}
+\newcommand{\decname}{\ifFTR d\'ecembre\else December\fi}
+
+
+% De'finit un \hline et un \vline d'e'paisseur double dans l'environnement
+%   tabular:
+%
+\def\hlined{\noalign{\hrule \@height \tabgrostrait\arrayrulewidth}}
+
+\def\vlined{\hspace{\arraycolsep}\vrule \@width
+    \tabgrostrait\arrayrulewidth\hspace{\arraycolsep}}
+% Avec !{} de array.sty :
+\def\vlined{\vrule \@width\tabgrostrait\arrayrulewidth}
+\def\vline{\vrule \@width\arrayrulewidth}
+
+% Pour faire marcher \multicolumn{2}{!{...}}{...} :
+% Pas de \bgroup possible autour de \@mkpream...
+\let\@mkpream@ORI=\@mkpream
+{\catcode`!=\active\catcode`>=\active\catcode`<=\active
+\gdef\@mkpream#1{\def!{\string!}\def>{\string>}\def<{\string<}%
+\@mkpream@ORI{#1}}}
+
+
+% Les \vlined a` mettre en de'but et fin de tableau:
+
+%\def\vlinedl{\vrule \@width \tabgrostrait\arrayrulewidth\hspace{\arraycolsep}}
+%\def\vlinedr{\hspace{\arraycolsep}\vrule \@width \tabgrostrait\arrayrulewidth}
+
+% A cause d'un truc merdique pour \cline, un \vlined sans espace:
+%\def\vlinedz{\vrule \@width \tabgrostrait\arrayrulewidth}
+
+% La me^me chose avec \cline:
+
+\def\clined#1{\@clined[#1]}
+\def\@clined[#1-#2]{\noalign{\global\@cla#1\relax
+\global\advance\@cla\m@ne
+\ifnum\@cla>0\global\let\@gtempa\@clinead\else
+  \global\let\@gtempa\@clinebd\fi
+\global\@clb#2\relax
+\global\advance\@clb-\@cla}\@gtempa
+\noalign{\vskip-\tabgrostrait\arrayrulewidth}}
+
+\def\@clinead{\multispan\@cla&\multispan\@clb
+\unskip\leaders\hrule \@height \tabgrostrait\arrayrulewidth \hfill
+\cr}
+
+\def\@clinebd{\multispan\@clb
+\unskip\leaders\hrule \@height \tabgrostrait\arrayrulewidth \hfill
+\cr}
+
+% Coupe du texte en 2 colonnes :
+\def\deuxcolonnes#1{\setbox\une@boiteperso=\vbox{\hsize=0.5\hsize
+    \advance\hsize by -0.5 \columnsep
+    \textwidth=\hsize \linewidth=\hsize #1}{\splittopskip=0pt
+    \setbox\une@autreboiteperso= \vsplit \une@boiteperso to
+    0.5\ht\une@boiteperso
+    \hbox{\wd\une@autreboiteperso=0.5\hsize
+        \box\une@autreboiteperso%\hskip 0.5\columnsep
+        \vrule width
+    \columnseprule \hskip 0.5\columnsep \box\une@boiteperso}
+    }
+}
+
+
+% Coupe du texte en 3 colonnes :
+\newcommand{\troiscolonnes}[1]{\setbox\une@boiteperso=\vbox{\hsize=0.3\hsize
+    \advance\hsize by -0.5 \columnsep
+    \textwidth=\hsize \linewidth=\hsize #1}{\splittopskip=0pt
+    \setbox\une@autreboiteperso= \vsplit \une@boiteperso to
+    0.33\ht\une@boiteperso
+    \hbox{\wd\une@autreboiteperso=0.3\hsize
+        \box\une@autreboiteperso%\hskip 0.5\columnsep
+        \vrule width
+    \columnseprule \hskip 0.5\columnsep
+    {\splittopskip=0pt \setbox\une@autreboiteperso= \vsplit \une@boiteperso
+    to 0.5\ht\une@boiteperso}\wd\une@autreboiteperso=0.3\hsize
+    \box\une@autreboiteperso\vrule width \columnseprule \hskip 0.5\columnsep
+    \box\une@boiteperso}
+    }
+}
+
+% De'finit une fonction d'index a` utiliser dans la bibliographie:
+%   pluto^t que de mettre la page, on met la re'fe'rence bibliographique dans
+%   l'index.
+% On vire les \@bsphack et \@esphack pour ne pas rajouter de blancs dans la
+%   bibliographie :
+%
+\def\indexbib{\begingroup%
+     \def\protect##1{\string##1\space}\@sanitize%
+     \@wrindexbib}
+
+% On e'crit ||||[blabla92] pour que ce soit facile a` de'tecter en sed... :-)
+%
+\def\@wrindexbib#1{%
+    \xdef\@gtempa{\write\@indexfile{\string%
+        \indexentry{#1}{||||[\nomindexbib]}}}\endgroup\@gtempa%
+    \if@nobreak \ifvmode\nobreak\fi\fi}
+
+% Modif pour garder le nom de la re'fe'rence dans \nomindexbib,
+%   utilise'e par \indexbib.
+%
+\def\nomindexbib{???}
+
+% Modifie's de french.sty:
+%
+\def\@lbibitem[#1]#2{\item[\@biblabel{#1}\hfill]\if@filesw
+      \gdef\nomindexbib{#1}%
+      {\let\protect\noexpand
+       \immediate
+       \write\@auxout{\string\bibcite{#2}{#1}}}\fi\ignorespaces}
+
+\def\@bibitem#1{\gdef\nomindexbib{\the\c@enumi}%
+\item\if@filesw \immediate\write\@auxout
+  {\string\bibcite{#1}{\the\value{\@listctr}}}\fi\ignorespaces}
+
+% Pour permettre des re'fe'rences croise'es de la bibliographie :
+\def\@citex[#1]#2{%
+  \let\@citea\@empty
+  \@cite{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{,\penalty\@m\ }%
+     \edef\@citeb{\expandafter\@firstofone\@citeb}%
+     \if@filesw\immediate\write\@auxout{\string\citation{\@citeb}}%
+                                % Sort le nume'ro de page en me^me temps :
+     \immediate\write\@auxout{\string\@gobble{\thepage}}\fi
+     \@ifundefined{b@\@citeb}{\mbox{\reset@font\bfseries ?}%
+       \G@refundefinedtrue\@latex@warning
+       {Citation `\@citeb' on page \thepage \space undefined}}%
+     {\hbox{\csname b@\@citeb\endcsname}}}}{#1}}
+
+% Modifie l'incre'mentation des pages pour que c,a marche comme dans
+%   \folio de TeX. Tre`s sale : on modifie carre'ment \stepcounter !!!
+%   Comme le dit le commentaire, pluto^t que de modifier \@outputpage,
+%   j'ai pre'fe're' modifier \stepcounter, plus petit et ayant probablement
+%   moins de chance de changer que \@outputpage. Mais c'est tout a` fait
+%   discutable...
+\def\stepcounter#1{%
+    \expandafter\ifx\csname c@#1\endcsname\c@page
+        \ifnum\c@page<0%
+            \global\advance\c@page by -\@ne
+        \else
+            \global\advance\csname c@#1\endcsname \@ne
+        \fi
+    \else
+        \global\advance\csname c@#1\endcsname \@ne
+    \fi
+    {\let\@elt\@stpelt \csname cl@#1\endcsname}%
+}

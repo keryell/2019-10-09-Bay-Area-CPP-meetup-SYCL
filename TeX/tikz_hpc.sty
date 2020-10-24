@@ -1,0 +1,21 @@
+\ProvidesPackage{tikz_hpc}[2011/03/16 Some TiKZ/PGF add-ons at HPC Project]
+
+\RequirePackage{tikz}
+
+% Fail here because of catcode wizardy I guess :-(
+% To be able to link nodes in the text:
+% \newcommand{\APlaceTextNode}[2]{\tikz \node[inner sep=0pt,text depth=0pt] (#1) {#2};}
+
+% Some old tests used to do previous macro:
+%    % \item \rnode{Analyse}{Analyse} du programme disponible
+%     % \item \tikz \node[circle,fill=red!50] (Analysenode) {Analyse};
+%   \item A\tikz \node[inner sep=0pt,text depth=0pt] (Analysenode) {Analyse};B
+%   \item
+%     \begin{tikzpicture}
+%       \node[outer sep=0pt,inner sep=0pt,minimum height=0pt,text depth=0pt] (AnalyseNode) {Analyse};
+%     \end{tikzpicture}
+%     % \item \tikz \node[circle,fill=red!50] (Analysenode) {};
+
+% To be able to link nodes between any picture by storing information into .aux:
+\tikzstyle{every picture}+=[remember picture]\relax
+

@@ -1,0 +1,7 @@
+\ProvidesPackage{exemple}[2002/09/22 Juste pour afficher du code en plus
+petit verbatim]
+
+\RequirePackage{fancyvrb}
+
+\let\TailleExemple=\small
+\newenvironment{exemple}{\VerbatimEnvironment\bgroup\TailleExemple\begin{Verbatim}}{\end{Verbatim}\egroup}

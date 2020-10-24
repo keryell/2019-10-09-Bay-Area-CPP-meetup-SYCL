@@ -1,0 +1,37 @@
+\definecolor{tbgreen}{rgb}{0.60,0.64,0.13}
+%\setbeamercolor{alerted text}{fg=tbgreen}
+%\setbeamercolor{structure}{fg=tbgreen}
+
+\newcommand{\MakeBoite}[2]{\newenvironment{#1}[1]{\bgroup\setlength{\linewidth}{0.5\linewidth}
+    % This is now the \SetAllTextColor macro...
+  \setbeamercolor{normal text}{fg=black}
+  \setbeamercolor{structure}{fg=black}
+  \setbeamercolor{item}{fg=black}
+  \setbeamercolor{itemize}{fg=black}
+  \setbeamercolor{itemize item}{fg=black}
+  \setbeamercolor{itemize item projected}{fg=black}
+  \setbeamercolor{itemize subitem}{fg=black}
+  \setbeamercolor{itemize subsubitem}{fg=black}
+  \setbeamercolor{itemize/enumerate body}{fg=black}
+  \setbeamercolor{itemize/enumerate subbody}{fg=black}
+  \setbeamercolor{itemize/enumerate subbody}{fg=black}
+  \setbeamercolor{itemize/enumerate subsubbody}{fg=black}
+  \begin{beamerboxesrounded}[scheme=#2,shadow=false]{\usebeamercolor[fg]{normal text}##1}%
+    \usebeamercolor[fg]{normal text}}
+  {\end{beamerboxesrounded}\egroup}
+}
+
+\MakeBoite{BoiteA}{jaune}
+% \newenvironment{BoiteA}[1]{\bgroup\setlength{\linewidth}{0.5\linewidth}
+%   \begin{beamerboxesrounded}[scheme=jaune,shadow=false]{\black #1}\setbeamercolor{normal text}{fg=black}\color{fg}}
+%   {\end{beamerboxesrounded}\egroup}
+
+\MakeBoite{BoiteB}{rouge}
+% \newenvironment{BoiteB}[1]{\bgroup\setlength{\hsize}{0.7\linewidth}
+%   \begin{beamerboxesrounded}[scheme=rouge,shadow=false]{\black #1}}
+%   {\end{beamerboxesrounded}\egroup}
+
+\MakeBoite{BoiteC}{bleuvert}
+\MakeBoite{BoiteD}{vertrouge}
+\MakeBoite{BoiteE}{rougebleu}
+\MakeBoite{BoiteF}{gris}
